@@ -1,0 +1,74 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <table class="table">
+            <thead class="table-dark">
+            <tr class="text-center">
+                <th>번호</th>
+                <th style="width:50%">제목</th>
+                <th>글쓴이</th>
+                <th>작성일시</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" th:each="post, loop : ${postPage}">
+                    <td th:text="${postPage.getTotalElements - (postPage.number * postPage.size) - loop.index}"></td>
+                    <td class="text-start">
+                        <a th:href="@{|/post/detail/${post.postId}|}" th:text="${post.title}"></a>
+                        <span class="text-danger small ms-2"
+                              th:if="${#lists.size(post.commentList) > 0}"
+                              th:text="${#lists.size(post.commentList)}">
+                        </span>
+                    </td>
+                    <td><span th:if="${post.siteUserName != null}" th:text="${post.siteUserName}"></span></td>
+                    <td class="date-cell" th:text="${post.createdDate}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 페이징처리 시작 -->
+        <div th:if="${!postPage.isEmpty()}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${!postPage.hasPrevious()} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{|?page=${postPage.number - 1}|}">
+                        <span>이전</span>
+                    </a>
+                </li>
+                <li th:each="page: ${#numbers.sequence(0, postPage.totalPages - 1)}"
+                    th:if="${page >= postPage.number - 5 and page <= postPage.number + 5}"
+                    th:classappend="${page == postPage.number} ? 'active'"
+                    class="page-item">
+                    <a th:text="${page + 1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                </li>
+                <li class="page-item" th:classappend="${!postPage.hasNext} ? 'disabled'">
+                    <a class="page-link" th:href="@{|?page=${postPage.number + 1}|}">
+                        <span>다음</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- 페이징처리 끝 -->
+        <a sec:authorize="isAuthenticated()" th:href="@{/post/create}" class="btn btn-primary">글 작성하기</a>
+    </div>
+</html>
+
+<script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hour = ('0' + date.getHours()).slice(-2);
+        const minute = ('0' + date.getMinutes()).slice(-2);
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
+
+    function formatDates() {
+        document.querySelectorAll('.date-cell').forEach(cell => {
+            const originalText = cell.textContent;
+            cell.textContent = formatDate(originalText);
+        });
+    }
+
+    // Call formatDates after the page has loaded
+    window.addEventListener('load', formatDates);
+</script>

@@ -1,0 +1,105 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <!-- 글 -->
+        <h2 class="border-bottom py-2" th:text="${post.title}"></h2>
+        <div class="card my-3">
+            <div class="card-body">
+                <div class="card-text" style="white-space: pre-line;" th:text="${post.content}"></div>
+                <div class="d-flex justify-content-end">
+                    <div th:if="${post.modifiedDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+                        <div class="mb-2">modified at</div>
+                        <div class="date-cell" th:text="${post.modifiedDate}"></div>
+                    </div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div class="mb-2">
+                            <span th:if="${post.siteUserName != null}" th:text="${post.siteUserName}"></span>
+                        </div>
+                        <div class="date-cell" th:text="${post.createdDate}"></div>
+                    </div>
+                </div>
+                <div class="my-3">
+                    <a th:href="@{|/post/modify/${post.postId}|}" class="btn btn-sm btn-outline-secondary"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${post.siteUserName != null and #authentication.getPrincipal().getUsername() == post.siteUserName}"
+                       th:text="수정"></a>
+                    <a href="javascript:void(0);" th:data-uri="@{|/post/delete/${post.postId}|}"
+                       class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                       th:if="${post.siteUserName != null and #authentication.getPrincipal().getUsername() == post.siteUserName}"
+                       th:text="삭제"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글의 갯수 표시 -->
+        <h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(post.commentList)}개의 댓글이 있습니다.|"></h5>
+
+        <!-- 댓글 반복 시작 -->
+        <div class="card my-3" th:each="comment : ${post.commentList}">
+            <a th:id="|comment_${comment.commentId}|"></a>
+            <div class="card-body">
+                <div class="card-text" style="white-space: pre-line;" th:text="${comment.content}"></div>
+                <div class="d-flex justify-content-end">
+                    <div th:if="${comment.modifiedDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+                        <div class="mb-2">modified at</div>
+                        <div class="date-cell" th:text="${comment.modifiedDate}"></div>
+                    </div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div class="mb-2">
+                            <span th:if="${comment.siteUserName != null}" th:text="${comment.siteUserName}"></span>
+                        </div>
+                        <div class="date-cell" th:text="${comment.createdDate}"></div>
+                    </div>
+                </div>
+                <div class="my-3">
+                    <a th:href="@{|/comment/modify/${comment.commentId}|}" class="btn btn-sm btn-outline-secondary"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${comment.siteUserName != null and #authentication.getPrincipal().getUsername() == comment.siteUserName}"
+                       th:text="수정"></a>
+                    <a href="javascript:void(0);" th:data-uri="@{|/comment/delete/${comment.commentId}|}"
+                       class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                       th:if="${comment.siteUserName != null and #authentication.getPrincipal().getUsername() == comment.siteUserName}"
+                       th:text="삭제"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글 작성 -->
+        <form th:action="@{|/comment/create/${post.postId}|}" th:object="${commentForm}" method="post" class="my-3">
+            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+            <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>
+            <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="10"></textarea>
+            <input sec:authorize="isAuthenticated()" type="submit" value="댓글등록" class="btn btn-primary my-2">
+        </form>
+    </div>
+</html>
+
+<script>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if(confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            };
+        });
+    });
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hour = ('0' + date.getHours()).slice(-2);
+        const minute = ('0' + date.getMinutes()).slice(-2);
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
+
+    function formatDates() {
+        document.querySelectorAll('.date-cell').forEach(cell => {
+            const originalText = cell.textContent;
+            cell.textContent = formatDate(originalText);
+        });
+    }
+
+    // Call formatDates after the page has loaded
+    window.addEventListener('load', formatDates);
+</script>

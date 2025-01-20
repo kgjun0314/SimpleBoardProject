@@ -1,5 +1,5 @@
 # SimpleBoardProject
-Java
+Java\n
 Spring Boot
 Spring Data JPA
 H2 Database

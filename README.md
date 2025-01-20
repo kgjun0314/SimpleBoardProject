@@ -1,5 +1,5 @@
 # SimpleBoardProject
-Java, Spring Boot, Spring Data JPA, H2 Database, Querydsl, Thymeleaf를 활용하여 제작한 간단한 게시판
+Java, Spring Boot, Spring Data JPA, H2 Database, Querydsl, RESTful API, Thymeleaf를 활용하여 제작한 간단한 게시판
 
 # 메인화면
 ![메인화면](https://github.com/user-attachments/assets/ccf4efdb-41b6-439a-a258-8b1a7ef6e097)

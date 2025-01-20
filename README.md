@@ -1,4 +1,5 @@
 # SimpleBoardProject
+# 메인화면
 ![메인화면](https://github.com/user-attachments/assets/ccf4efdb-41b6-439a-a258-8b1a7ef6e097)
 ![회원가입](https://github.com/user-attachments/assets/183a246d-d6c1-40ec-a79c-6f39150a65ed)
 ![로그인](https://github.com/user-attachments/assets/66971524-3163-409e-94e7-fd9bd92b51dc)

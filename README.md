@@ -1,9 +1,5 @@
 # SimpleBoardProject
-Java\n
-Spring Boot
-Spring Data JPA
-H2 Database
-Querydsl
+Java, Spring Boot, Spring Data JPA, H2 Database, Querydsl
 
 # 메인화면
 ![메인화면](https://github.com/user-attachments/assets/ccf4efdb-41b6-439a-a258-8b1a7ef6e097)
